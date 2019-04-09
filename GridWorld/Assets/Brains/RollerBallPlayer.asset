@@ -13,14 +13,13 @@ MonoBehaviour:
   m_Name: RollerBallPlayer
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 6
+    vectorObservationSize: 4
     numStackedVectorObservations: 1
-    vectorActionSize: 02000000
+    vectorActionSize: 05000000
     cameraResolutions: []
     vectorActionDescriptions:
     - 
-    - 
-    vectorActionSpaceType: 1
+    vectorActionSpaceType: 0
   keyContinuousPlayerActions:
   - key: 100
     index: 0
@@ -35,4 +34,19 @@ MonoBehaviour:
     index: 1
     value: -1
   axisContinuousPlayerActions: []
-  discretePlayerActions: []
+  discretePlayerActions:
+  - key: 100
+    branchIndex: 0
+    value: 2
+  - key: 97
+    branchIndex: 0
+    value: 1
+  - key: 119
+    branchIndex: 0
+    value: 4
+  - key: 115
+    branchIndex: 0
+    value: 3
+  - key: 113
+    branchIndex: 0
+    value: 0

@@ -38,14 +38,34 @@ public class RollerAgent : Agent
         // // Target, Key and Agent positions
         //AddVectorObs(Target.position);
         //AddVectorObs(Key.position);
-        AddVectorObs(this.transform.position);
+
+        float x = Normalise(this.transform.position.x, 0, 20);
+        AddVectorObs(x);
+        float y = Normalise(this.transform.position.y, 0, 1);
+        AddVectorObs(y);
+        float z = Normalise(this.transform.position.z, 0, 20);
+        AddVectorObs(z);
+        Monitor.Log("X", x.ToString(), null);
+        Monitor.Log("Y", y.ToString(), null);
+        Monitor.Log("Z", z.ToString(), null);
 
         // State of key collection
         AddVectorObs(this.collectedKey);
 
-        // Agent velocity
-        AddVectorObs(rBody.velocity.x);
-        AddVectorObs(rBody.velocity.z);
+        Monitor.Log("Collected Key", (this.collectedKey == 1).ToString(), null);
+
+        // // Agent velocity
+        // AddVectorObs(rBody.velocity.x);
+        // AddVectorObs(rBody.velocity.z);
+
+        // Monitor.Log("Velocity X", rBody.velocity.x.ToString(), null);
+        // Monitor.Log("Velocity Z", rBody.velocity.z.ToString(), null);
+
+    }
+
+    private float Normalise(float currentValue, float minValue = 0, float maxValue = 20)
+    {
+        return (currentValue - minValue) / (maxValue - minValue);
     }
 
 
@@ -53,9 +73,35 @@ public class RollerAgent : Agent
     {
         // Actions, size = 2
         Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = vectorAction[0];
-        controlSignal.z = vectorAction[1];
+
+        controlSignal.x = 0;
+        controlSignal.y = 0;
+        controlSignal.z = 0;
+
+        int action = int.Parse(vectorAction[0].ToString());
+
+        if (vectorAction[0] > 0)
+        {
+            if (action == 1)
+            {
+                controlSignal.x = -1;
+            }
+            else if (action == 2)
+            {
+                controlSignal.x = 1;
+            }
+            else if (action == 3)
+            {
+                controlSignal.z = -1;
+            }
+            else if (action == 4)
+            {
+                controlSignal.z = 1;
+            }
+        }
         rBody.AddForce(controlSignal * speed);
+
+
 
         // Rewards
         float distanceToTarget = Vector3.Distance(this.transform.position,
@@ -64,7 +110,7 @@ public class RollerAgent : Agent
         // Reached target
         if (collectedKey > 0 && distanceToTarget < 1.42f)
         {
-            SetReward(1.0f);
+            SetReward(10.0f);
             Done();
         }
     }
@@ -75,6 +121,7 @@ public class RollerAgent : Agent
         {
             other.gameObject.SetActive(false);
             collectedKey = 1;
+            SetReward(1.0f);
             targetRender.material.color = Color.green;
         }
     }
